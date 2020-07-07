@@ -1,0 +1,553 @@
+programa
+{
+inclua biblioteca Arquivos --> a
+inclua biblioteca Util --> util
+inclua biblioteca Texto --> tx
+inclua biblioteca Objetos --> o
+inclua biblioteca Tipos --> t
+inclua biblioteca Calendario --> c
+	
+cadeia idioma = "ptBr"
+logico logado = falso
+
+funcao inicio()
+{
+	enquanto(verdadeiro){
+		escreval("-   BEM-VINDO AO BANCO START LATAM!  -")
+		escreval(" DIGITE O NÚMERO CORRESPONDENTE AO PROCEDIMENTO DESEJADO:")
+		escreval("| (1) - ACESSAR CONTA. | (2) - CRIAR CONTA. |")
+		inteiro opcao
+		leia(opcao)
+		limpa()
+		para (inteiro contador = 1; contador >= 0; contador--)
+		{
+			limpa()
+			escreva("AGUARDE..")
+			util.aguarde(500)
+		}
+		limpa()
+		se(opcao == 1){
+			acessarConta()
+		}senao se(opcao == 2){
+			criarConta()
+		} senao {
+			escreval("OPÇÃO INVÁLIDA! DIGITE UMA OPÇÃO VÁLIDA PARA CONTINUAR.")
+			escreval("\n")
+		}
+	}
+}
+
+funcao acessarConta(){
+	escreval("NÚMERO DA CONTA: ")
+	inteiro conta, senhaDigitada
+	leia(conta)
+	escreval("SENHA: ")
+	leia(senhaDigitada)
+	inteiro objConta = buscaConta(conta)
+	
+	para (inteiro contador = 1; contador >= 0; contador--)
+		{
+			limpa()
+			escreva("AGUARDE..")
+			util.aguarde(500)
+		}
+		limpa()
+	
+
+	se(objConta == -1){
+		escreval("CONTA NÃO ENCONTRADA.")
+		escreval("\n")
+	} senao {
+		inteiro senhaReal = o.obter_propriedade_tipo_inteiro(objConta, "senha")
+		inteiro qtdTentativas = buscaQtdTentativas(conta)
+
+		para (inteiro contador = 1; contador >= 0; contador--)
+		{
+			limpa()
+			escreva("AGUARDE..")
+			util.aguarde(500)
+		}
+		limpa()
+			
+			se (senhaReal != senhaDigitada){
+			limpa()
+			escreval("SENHA INVÁLIDA!")
+			atualizaQtdTentativas(conta, qtdTentativas + 1)			
+		} senao se (qtdTentativas > 3){
+			escreval("NÚMERO DE TENTATIVAS EXCEDIDO. SENHA BLOQUEADA.")
+			escreval("ENTRE EM CONTATO COM O SEU GERENTE.")
+		} senao {
+			logado = verdadeiro
+			atualizaQtdTentativas(conta, 0)
+			telaOperacaoBancaria(objConta)
+		}
+	}
+}
+
+funcao inteiro buscaQtdTentativas(inteiro conta){
+	cadeia qtd = "0"
+	cadeia caminhoArquivo = "./arquivo/senha/" + conta + "_qtd_erro_senha.txt"
+	se(a.arquivo_existe(caminhoArquivo)){
+		inteiro arq = a.abrir_arquivo(caminhoArquivo, a.MODO_LEITURA)
+		qtd = a.ler_linha(arq)					
+		a.fechar_arquivo(arq)	
+	} senao {
+		inteiro arq = a.abrir_arquivo(caminhoArquivo, a.MODO_ESCRITA)
+		a.escrever_linha(qtd, arq)
+		a.fechar_arquivo(arq)
+	}
+
+	retorne t.cadeia_para_inteiro(qtd, 10)
+}
+
+funcao atualizaQtdTentativas(inteiro conta, inteiro qtd){
+	inteiro arq = a.abrir_arquivo("./arquivo/senha/" + conta + "_qtd_erro_senha.txt", a.MODO_ESCRITA)
+	a.escrever_linha(qtd + "", arq)
+	a.fechar_arquivo(arq)
+}
+
+funcao telaOperacaoBancaria(inteiro objConta){
+	cadeia nome = o.obter_propriedade_tipo_cadeia(objConta, "nome")
+	inteiro conta = o.obter_propriedade_tipo_inteiro(objConta, "conta")
+	
+	enquanto(logado){
+		limpa()
+		escreval("Olá " + nome)
+		escreval("Digite o número correspondente ao precedimento desejado: ")
+		escreval("| (1) - SALDO | (2) - EXTRATO | (3) - SAQUE | (4) - DEPÓSITO | (5) TRANSFERÊNCIA | (6) - SAIR |")
+		inteiro opcao
+		leia(opcao)
+		escolha(opcao){
+
+			caso 1: 
+				para (inteiro contador = 1; contador >= 0; contador--)
+			{
+				limpa()
+				escreva("AGUARDE..")
+				util.aguarde(500)
+			}
+			limpa()
+				mostraSaldo(conta)
+				enterParaContinuar()
+				pare
+			caso 2: 
+				para (inteiro contador = 1; contador >= 0; contador--)
+			{
+				limpa()
+				escreva("AGUARDE..")
+				util.aguarde(500)
+			}
+			limpa()
+				mostraExtrato(conta)
+				enterParaContinuar()
+				pare
+			caso 3: 
+				para (inteiro contador = 1; contador >= 0; contador--)
+			{
+				limpa()
+				escreva("AGUARDE..")
+				util.aguarde(500)
+			}
+			limpa()
+				fazSaque(conta)
+				enterParaContinuar()
+				pare
+			caso 4: 
+				para (inteiro contador = 1; contador >= 0; contador--)
+			{
+				limpa()
+				escreva("AGUARDE..")
+				util.aguarde(500)
+			}
+			limpa()
+				fazDeposito(conta)
+				enterParaContinuar()
+				pare
+			caso 5: 
+				para (inteiro contador = 1; contador >= 0; contador--)
+			{
+				limpa()
+				escreva("AGUARDE..")
+				util.aguarde(500)
+			}
+			limpa()
+				transferencia(conta)
+				enterParaContinuar()
+				pare
+			caso 6: 
+				para (inteiro contador = 1; contador >= 0; contador--)
+			{
+				limpa()
+				escreva("AGUARDE..")
+				util.aguarde(500)
+			}
+			limpa()
+				logado = falso
+				pare
+			caso contrario: 
+				para (inteiro contador = 1; contador >= 0; contador--)
+			{
+				limpa()
+				escreva("AGUARDE..")
+				util.aguarde(500)
+			}
+			limpa()
+				escreva("OPÇÃO INVÁLIDA! DIGITE UMA OPÇÃO VÁLIDA PARA CONTINUAR.")
+				pare
+		}
+	}
+}
+
+funcao transferencia(inteiro contaOrigem){
+	inteiro contaDestino
+	real valor
+	
+	limpa()
+	escreval("CONTA DE DESTINO:")
+	leia(contaDestino)
+	escreval("VALOR:")
+	leia(valor)
+		para (inteiro contador = 1; contador >= 0; contador--)
+		{
+			limpa()
+			escreva("AGUARDE..")
+			util.aguarde(500)
+		}
+		limpa()
+
+	inteiro objConta = buscaConta(contaDestino)
+
+	se(objConta == -1){
+		escreval("CONTA DESTINO NÃO ENCONTRADA.")
+	} senao {
+		real saldo = consultaSaldo(contaOrigem)
+		se (valor > saldo){
+			limpa()
+			escreval("LIMITE INSUFICIÊNTE. SEU SALDO É:" + saldo )
+		} senao {
+			atualizaSaldo(contaOrigem, -1*valor)
+			atualizaSaldo(contaDestino, valor)
+			
+			gravaExtrato(contaOrigem, "TRANSFERÊNCIA REALIZADA NO VALOR DE:" + valor)
+			gravaExtrato(contaDestino, "TRANSFERêNCIA RECEBIDA NO VALOR DE:" + valor)
+			limpa()
+			escreval("TRANSFERÊNCIA REALIZADA COM SUCESSO!")
+		}
+	}
+}
+
+funcao fazSaque(inteiro conta){
+	escreval("VALOR DO SAQUE:")
+	real valor
+	leia(valor)
+	real saldo = consultaSaldo(conta)
+	real limite = consultaLimiteChequeEspecial(conta)
+	se (valor > (saldo + limite)){
+		limpa()
+		para (inteiro contador = 1; contador >= 0; contador--)
+		{
+			limpa()
+			escreva("AGUARDE..")
+			util.aguarde(500)
+		}
+		limpa()
+		escreval("LIMITE INDISPONÍVEL PARA SOLICITAÇÃO DESEJADA! SEU SALDO É DE:" + saldo )
+		escreval("\n")
+		escreval("LIMITE CHEQUE ESPECIAL: " + limite )
+		
+	} senao {
+		real saldoNovo = atualizaSaldo(conta, -1*valor)
+		
+		gravaExtrato(conta, "SAQUE NO VALOR DE:" + valor)
+		
+		se(saldoNovo < 0){
+			gravaExtrato(conta, "VOCÊ ESTÁ NO CHEQUE ESPECIAL. SALDO ATUAL: " + saldoNovo)	
+		}
+		limpa()
+			para (inteiro contador = 1; contador >= 0; contador--)
+			{
+				limpa()
+				escreva("AGUARDE..")
+				util.aguarde(500)
+			}
+			limpa()
+		escreval("SAQUE REALIZADO COM SUCESSO.")
+	}
+}
+
+funcao real consultaLimiteChequeEspecial(inteiro conta){
+	inteiro objConta = buscaConta(conta)
+	retorne o.obter_propriedade_tipo_real(objConta, "limiteCheque")
+}
+
+funcao fazDeposito(inteiro conta){
+	escreval("VALOR DO DEPÓSITO:")
+	real valor
+	leia(valor)
+	atualizaSaldo(conta, valor)
+	para (inteiro contador = 1; contador >= 0; contador--)
+		{
+			limpa()
+			escreva("AGUARDE..")
+			util.aguarde(500)
+		}
+		limpa()
+	gravaExtrato(conta, "DEPÓSITO NO VALOR DE:" + valor)
+	limpa()
+	para (inteiro contador = 1; contador >= 0; contador--)
+		{
+			limpa()
+			escreva("AGUARDE..")
+			util.aguarde(500)
+		}
+		limpa()
+	escreval("DEPÓSITO REALIZADO COM SUCESSO.")
+}
+
+funcao real atualizaSaldo(inteiro conta, real valor){
+	real saldoAtual = consultaSaldo(conta)
+	real saldoNovo
+
+	saldoNovo = saldoAtual + valor
+
+	inteiro arq = a.abrir_arquivo("./arquivo/conta/" + conta + "_saldo.txt", a.MODO_ESCRITA)
+	a.escrever_linha(saldoNovo + "", arq)
+	a.fechar_arquivo(arq)
+	retorne saldoNovo
+}
+
+funcao gravaExtrato(inteiro conta, cadeia texto){
+	cadeia data = obterData()
+	real saldoAtual = consultaSaldo(conta)
+	real saldoNovo
+
+	inteiro arq = a.abrir_arquivo("./arquivo/conta/" + conta + "_extrato.txt", a.MODO_ACRESCENTAR)
+	a.escrever_linha(data + " : " + texto, arq)
+	a.fechar_arquivo(arq)
+}
+
+funcao mostraExtrato(inteiro conta){
+	cadeia extrato = consultaExtrato(conta)
+	limpa()
+	para (inteiro contador = 1; contador >= 0; contador--)
+		{
+			limpa()
+			escreva("AGUARDE..")
+			util.aguarde(500)
+		}
+		limpa()
+	mostraSaldo(conta)
+	escreval("|                |")
+	escreval("EXTRATO:")
+	escreval(extrato)
+	escreval("|                |")
+}
+
+funcao cadeia consultaExtrato(inteiro conta){
+	cadeia extrato = ""
+	se(a.arquivo_existe("./arquivo/conta/" + conta + "_extrato.txt")){
+		inteiro arq = a.abrir_arquivo("./arquivo/conta/" + conta + "_extrato.txt", a.MODO_LEITURA)
+		enquanto (nao a.fim_arquivo(arq)){
+			extrato = extrato + a.ler_linha(arq) + "\n"
+		}	
+		a.fechar_arquivo(arq)	
+	} senao {
+		//cria arquivo
+		inteiro arq = a.abrir_arquivo("./arquivo/conta/" + conta + "_extrato.txt", a.MODO_ESCRITA)
+		a.fechar_arquivo(arq)
+	}
+
+	se (extrato == "" ou extrato == "\n"){
+		para (inteiro contador = 1; contador >= 0; contador--)
+		{
+			limpa()
+			escreva("AGUARDE..")
+			util.aguarde(500)
+		}
+		limpa()
+		extrato = "DADOS INEXISTENTES."
+	}
+	
+	retorne extrato
+}
+
+funcao mostraSaldo(inteiro conta){
+	real saldo = consultaSaldo(conta)
+	real limite = consultaLimiteChequeEspecial(conta)
+	limpa()
+	para (inteiro contador = 1; contador >= 0; contador--)
+		{
+			limpa()
+			escreva("AGUARDE..")
+			util.aguarde(500)
+		}
+		limpa()
+	escreval("|                |")
+	escreval("SALDO: "+ saldo)
+	escreval("\n")
+	escreval("LIMITE CHEQUE ESPECIAL: "+ limite)
+	escreval("\n")
+	escreval("|                |")
+}
+
+funcao enterParaContinuar(){
+	escreval("PRESSIONE ENTER PARA PROSSEGUIR.")
+	cadeia algo
+	leia(algo)
+	limpa()
+}
+
+funcao real consultaSaldo(inteiro conta){
+	cadeia saldo = "0"
+	se(a.arquivo_existe("./arquivo/conta/" + conta + "_saldo.txt")){
+		inteiro arq = a.abrir_arquivo("./arquivo/conta/" + conta + "_saldo.txt", a.MODO_LEITURA)
+		saldo = a.ler_linha(arq)					
+		a.fechar_arquivo(arq)	
+	} senao {
+		inteiro arq = a.abrir_arquivo("./arquivo/conta/" + conta + "_saldo.txt", a.MODO_ESCRITA)
+		a.escrever_linha("0", arq)
+		a.fechar_arquivo(arq)
+	}
+
+	retorne t.cadeia_para_real(saldo)
+}
+
+funcao inteiro buscaConta(inteiro conta){
+	inteiro objConta = -1
+	inteiro arq = a.abrir_arquivo("./arquivo/contas.txt", a.MODO_LEITURA)
+	
+	enquanto (nao a.fim_arquivo(arq)){
+		cadeia linha = a.ler_linha(arq)					
+		inteiro posicao = tx.posicao_texto("conta\" : " + conta, linha, 0)
+		logico contaEncontrada = (posicao > 0)
+		se(contaEncontrada){
+			objConta = o.criar_objeto_via_json(linha)
+			pare
+		}
+	}
+	a.fechar_arquivo(arq)
+	retorne objConta;
+}
+
+funcao criarConta(){
+	cadeia opcao
+	cadeia cpf
+	cadeia dataNascimento
+	cadeia nome
+	inteiro senha
+	
+	escreval("VOCÊ ESTÁ CRIANDO UMA CONTA. PRESSIONE ENTER PARA CONTINUAR OU DIGITE SAIR PARA VOLTAR A TELA INICIAL.")
+	leia(opcao)
+	para (inteiro contador = 1; contador >= 0; contador--)
+		{
+			limpa()
+			escreva("AGUARDE..")
+			util.aguarde(500)
+		}
+		limpa()
+
+	se (opcao == "SAIR" ou opcao == "sair"){
+		retorne
+	}
+	escreval("SEU NOME:")
+	leia(nome)
+	escreval("CPF:")
+	leia(cpf)
+	escreval("DATA DE NASCIMENTO:")
+	leia(dataNascimento)
+	
+	limpa()
+	senha = cadastraSenha()
+
+	inteiro numDaConta = numeroDaConta()
+	cadeia dadosDaConta = "{\"conta\" : " + numDaConta + ","
+	dadosDaConta = dadosDaConta + " \"cpf\" : \"" + cpf  + "\","
+	dadosDaConta += " \"dtNascimento\" : \"" + dataNascimento + "\","
+	dadosDaConta += " \"nome\" : \"" + nome + "\",",
+	dadosDaConta += " \"limiteCheque\" : " + 500.00 + ",",
+	dadosDaConta += " \"senha\" : " + senha + "}"	
+	escreverNoArquivo("./arquivo/contas.txt", dadosDaConta)
+
+		para (inteiro contador = 1; contador >= 0; contador--)
+		{
+			limpa()
+			escreva("AGUARDE..")
+			util.aguarde(500)
+		}
+		limpa()
+	escreval("NÚMERO DA CONTA CRIADA: " + numDaConta)
+	
+}
+
+funcao escreverNoArquivo(cadeia arquivo, cadeia conteudo){
+	inteiro arq = a.abrir_arquivo(arquivo, a.MODO_ACRESCENTAR)
+	a.escrever_linha(conteudo, arq)
+	a.fechar_arquivo(arq)
+}
+
+funcao inteiro numeroDaConta(){
+	retorne util.sorteia(1000, 9999)
+	
+}
+
+funcao inteiro cadastraSenha(){
+	logico senhaCadastraComSucesso = falso
+	inteiro senha = 0
+	inteiro confirmaSenha
+	para (inteiro contador = 1; contador >= 0; contador--)
+		{
+			limpa()
+			escreva("AGUARDE..")
+			util.aguarde(500)
+		}
+		limpa()
+	enquanto(nao senhaCadastraComSucesso){
+		escreval("DIGITE UMA SENHA COM 6 DÍGITOS:")
+		leia(senha)
+		enquanto(nao senhaCom6Numeros(senha)){
+			escreval("SENHA INVÁLIDA.")
+			escreval("DIGITE SENHA COM 6 NÚMEROS:")
+			leia(senha)	
+		}
+
+		para (inteiro contador = 1; contador >= 0; contador--)
+		{
+			limpa()
+			escreva("AGUARDE..")
+			util.aguarde(500)
+		}
+		limpa()
+		escreval("CONFIRME SUA SENHA:")
+		leia(confirmaSenha)
+		se(senha == confirmaSenha){
+			senhaCadastraComSucesso = verdadeiro
+		} senao {
+			limpa()
+			escreval("SENHAS NÃO CONFEREM!")
+		}
+	}
+
+	retorne senha
+}
+
+funcao logico senhaCom6Numeros(inteiro senha){
+	logico senhaTem6Numero = (senha/100000 >= 1 e senha/100000 < 10)
+	retorne senhaTem6Numero
+}
+
+funcao escreval(cadeia texto){
+	escreva(texto + "\n")
+}
+
+
+funcao cadeia obterData(){
+	retorne 
+		+ c.ano_atual() + "-"
+		+ c.mes_atual() + "-"
+		+ c.dia_mes_atual() + " "
+		+ c.hora_atual(falso) + ":"
+		+ c.minuto_atual() + ":"
+		+ c.segundo_atual() 
+}
+
+}
